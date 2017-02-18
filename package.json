@@ -12,7 +12,9 @@
     "dmg"
   ],
   "main": "lib/dmg.js",
-  "dependencies": {},
+  "dependencies": {
+    "plist": "~2.0.1"
+  },
   "devDependencies": {
     "mocha": "~3.2.0"
   },
