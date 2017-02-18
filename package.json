@@ -1,0 +1,32 @@
+{
+  "name": "apple-disk-image",
+  "version": "0.0.0",
+  "description": "Apple Disk Image (DMG)",
+  "license": "MIT",
+  "author": "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
+  "keywords": [
+    "apple",
+    "disk",
+    "image",
+    "disk-image",
+    "dmg"
+  ],
+  "main": "lib/dmg.js",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "~3.2.0"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "homepage": "https://github.com/jhermsmeier/node-apple-disk-image",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhermsmeier/node-apple-disk-image.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jhermsmeier/node-apple-disk-image/issues"
+  },
+  "scripts": {
+    "test": "mocha --ui tdd"
+  }
+}
