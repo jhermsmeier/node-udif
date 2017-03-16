@@ -1,7 +1,7 @@
 {
-  "name": "apple-disk-image",
+  "name": "udif",
   "version": "0.0.0",
-  "description": "Apple Disk Image (DMG)",
+  "description": "Apple Universal Disk Image Format (UDIF/DMG)",
   "license": "MIT",
   "author": "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
   "keywords": [
@@ -9,9 +9,13 @@
     "disk",
     "image",
     "disk-image",
-    "dmg"
+    "dmg",
+    "koly",
+    "mish",
+    "udif",
+    "universal"
   ],
-  "main": "lib/dmg.js",
+  "main": "lib/udif.js",
   "dependencies": {
     "plist": "~2.0.1"
   },
@@ -20,13 +24,13 @@
   },
   "peerDependencies": {},
   "optionalDependencies": {},
-  "homepage": "https://github.com/jhermsmeier/node-apple-disk-image",
+  "homepage": "https://github.com/jhermsmeier/node-udif",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jhermsmeier/node-apple-disk-image.git"
+    "url": "git+https://github.com/jhermsmeier/node-udif.git"
   },
   "bugs": {
-    "url": "https://github.com/jhermsmeier/node-apple-disk-image/issues"
+    "url": "https://github.com/jhermsmeier/node-udif/issues"
   },
   "scripts": {
     "test": "mocha --ui tdd"

@@ -1,17 +1,17 @@
-# Apple Disk Image (DMG)
-[![npm](https://img.shields.io/npm/v/apple-disk-image.svg?style=flat-square)](https://npmjs.com/package/apple-disk-image)
-[![npm license](https://img.shields.io/npm/l/apple-disk-image.svg?style=flat-square)](https://npmjs.com/package/apple-disk-image)
-[![npm downloads](https://img.shields.io/npm/dm/apple-disk-image.svg?style=flat-square)](https://npmjs.com/package/apple-disk-image)
-[![build status](https://img.shields.io/travis/jhermsmeier/node-apple-disk-image.svg?style=flat-square)](https://travis-ci.org/jhermsmeier/node-apple-disk-image)
+# Apple Universal Disk Image Format (UDIF/DMG)
+[![npm](https://img.shields.io/npm/v/udif.svg?style=flat-square)](https://npmjs.com/package/udif)
+[![npm license](https://img.shields.io/npm/l/udif.svg?style=flat-square)](https://npmjs.com/package/udif)
+[![npm downloads](https://img.shields.io/npm/dm/udif.svg?style=flat-square)](https://npmjs.com/package/udif)
+[![build status](https://img.shields.io/travis/jhermsmeier/node-udif.svg?style=flat-square)](https://travis-ci.org/jhermsmeier/node-udif)
 
 ## Install via [npm](https://npmjs.com)
 
 ```sh
-$ npm install --save apple-disk-image
+$ npm install --save udif
 ```
 
 ## Usage
 
 ```js
-var DMG = require( 'apple-disk-image' )
+var UDIF = require( 'udif' )
 ```
