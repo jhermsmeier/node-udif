@@ -21,29 +21,50 @@ var UDIF = require( 'udif' )
 ```js
 var dmg = new UDIF.Image( 'path/to/image.dmg' )
 
-// At this time all operations are readonly
 dmg.open( function( error ) {
   // ...
 })
 ```
 
-### Reading the UDIF footer
+### Closing the image
 
-The footer (aka the "Koly Block) contains pointers to the XML metadata,
+```js
+dmg.close( function( error ) {
+  // ...
+})
+```
+
+### Creating a readable stream
+
+```js
+var readableStream = UDIF.createReadStream( 'path/to/image.dmg' )
+```
+
+Or, if you already have an instance of `UDIF.Image`:
+
+```js
+var readableStream = dmg.createReadStream()
+```
+
+### Extracting the raw disk image
+
+Extracting the uncompressed, raw disk image from a `.dmg` file becomes as easy as the following:
+
+```js
+UDIF.createReadStream( 'path/to/image.dmg' )
+  .pipe( fs.createWriteStream( '/path/to/destination.img' ) )
+```
+
+### Inspecting the UDIF footer
+
+The footer (aka the "Koly Block") contains pointers to the XML metadata,
 data fork & resource fork as well as checksums.
 
 ```js
 // Once the dmg has been opened:
-dmg.readFooter( function( error, footer ) {
-  // The footer is also accessible as `dmg.footer`
-  dmg.footer === footer // => true
+dmg.open( function( error ) {
+  console.log( dmg.footer )
 })
-```
-
-**Inspecting the footer yields:**
-
-```js
-console.log( dmg.footer )
 ```
 
 ```js
@@ -77,21 +98,14 @@ KolyBlock {
 }
 ```
 
-### Reading the XML Metadata
+### Inspecting the XML Metadata
 
 The XML data is a [Property List](https://en.wikipedia.org/wiki/Property_list), (or plist) which contains a block map under `resource-fork.blkx`.
 
 ```js
-dmg.readPropertyList( function( error, resources ) {
-  // The resources are also accessible as `dmg.resources`
-  dmg.resources === resources // => true
+dmg.open( function( error ) {
+  console.log( dmg.resources )
 })
-```
-
-**Inspecting the resources yields:**
-
-```js
-console.log( dmg.resources )
 ```
 
 ```js
@@ -116,7 +130,7 @@ console.log( dmg.resources )
     blocks: [
       Block {
         type: 2147483653,
-        typeName: 'UDZO (UDIF zlib-compressed)',
+        description: 'UDZO (UDIF zlib-compressed)',
         comment: '',
         sectorNumber: 0,
         sectorCount: 1,
@@ -125,7 +139,7 @@ console.log( dmg.resources )
       },
       Block {
         type: 4294967295,
-        typeName: 'TERMINATOR',
+        description: 'TERMINATOR',
         comment: '',
         sectorNumber: 1,
         sectorCount: 0,
@@ -155,7 +169,7 @@ console.log( dmg.resources )
     blocks: [
       Block {
         type: 2147483653,
-        typeName: 'UDZO (UDIF zlib-compressed)',
+        description: 'UDZO (UDIF zlib-compressed)',
         comment: '',
         sectorNumber: 0,
         sectorCount: 1,
@@ -164,7 +178,7 @@ console.log( dmg.resources )
       },
       Block {
         type: 4294967295,
-        typeName: 'TERMINATOR',
+        description: 'TERMINATOR',
         comment: '',
         sectorNumber: 1,
         sectorCount: 0,
@@ -196,7 +210,7 @@ console.log( dmg.resources )
     blocks: [
       Block {
         type: 2147483653,
-        typeName: 'UDZO (UDIF zlib-compressed)',
+        description: 'UDZO (UDIF zlib-compressed)',
         comment: '',
         sectorNumber: 0,
         sectorCount: 1,
@@ -205,7 +219,7 @@ console.log( dmg.resources )
       },
       Block {
         type: 4294967295,
-        typeName: 'TERMINATOR',
+        description: 'TERMINATOR',
         comment: '',
         sectorNumber: 1,
         sectorCount: 0,
@@ -215,12 +229,4 @@ console.log( dmg.resources )
     ]
   }
 }]
-```
-
-### Closing the image
-
-```js
-dmg.close( function( error ) {
-  // ...
-})
 ```
