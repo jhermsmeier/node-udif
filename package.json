@@ -17,6 +17,7 @@
   ],
   "main": "lib/udif.js",
   "dependencies": {
+    "bloodline": "^1.0.1",
     "plist": "~2.0.1"
   },
   "devDependencies": {
