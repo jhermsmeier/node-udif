@@ -34,6 +34,20 @@ dmg.close( function( error ) {
 })
 ```
 
+### Determining the uncompressed size
+
+Note that the image has to be opened to determine the uncompressed size,
+as this is read from the resource fork.
+
+```js
+var dmg = new UDIF.Image( 'path/to/image.dmg' )
+
+dmg.open( function( error ) {
+  console.log( dmg.getUncompressedSize(), 'bytes' )
+  // > 629145600 bytes
+})
+```
+
 ### Creating a readable stream
 
 ```js
