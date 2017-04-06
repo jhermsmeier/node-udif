@@ -35,6 +35,6 @@
     "url": "https://github.com/jhermsmeier/node-udif/issues"
   },
   "scripts": {
-    "test": "mocha --ui tdd"
+    "test": "mocha"
   }
 }
