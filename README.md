@@ -251,3 +251,10 @@ dmg.open( function( error ) {
   }
 }]
 ```
+
+## References
+
+- [Demystifying the DMG File Format](http://newosxbook.com/DMG.html)
+- [VBox/Storage/DMG.cpp](https://www.virtualbox.org/svn/vbox/trunk/src/VBox/Storage/DMG.cpp)
+- [man1/hdiutil.1](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/hdiutil.1.html)
+- [Wikipedia/Apple_Disk_Image](https://en.wikipedia.org/wiki/Apple_Disk_Image)
