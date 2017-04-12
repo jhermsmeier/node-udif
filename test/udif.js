@@ -51,20 +51,50 @@ context( 'UDIF.Image', function() {
 
 context( 'UDIF.ReadStream', function() {
   images.forEach( function( data ) {
-    specify( data.filename, function( done ) {
+    context( data.filename, function() {
 
-      var bytesRead = 0
+      specify( 'read & decompress image', function( done ) {
 
-      UDIF.createReadStream( path.join( DATADIR, data.filename ) )
-        .on( 'error', done )
-        .on( 'data', function( chunk ) {
-          bytesRead += chunk.length
-          chunk = null
-        })
-        .on( 'end', function() {
-          assert.equal( bytesRead, data.uncompressedSize )
-          done()
-        })
+        var bytesRead = 0
+
+        UDIF.createReadStream( path.join( DATADIR, data.filename ) )
+          .on( 'error', done )
+          .on( 'data', function( chunk ) {
+            bytesRead += chunk.length
+            chunk = null
+          })
+          .on( 'end', function() {
+            assert.equal( bytesRead, data.uncompressedSize )
+            done()
+          })
+
+      })
+
+      specify( 'can close while reading', function( done ) {
+
+        UDIF.createReadStream( path.join( DATADIR, data.filename ) )
+          .on( 'error', done )
+          .on( 'data', function( chunk ) {
+            this.close()
+          })
+          .on( 'close', function() {
+            done()
+          })
+
+      })
+
+      specify( 'can destroy while reading', function( done ) {
+
+        UDIF.createReadStream( path.join( DATADIR, data.filename ) )
+          .on( 'error', done )
+          .on( 'data', function( chunk ) {
+            this.destroy()
+          })
+          .on( 'close', function() {
+            done()
+          })
+
+      })
 
     })
   })
