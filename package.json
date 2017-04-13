@@ -19,6 +19,7 @@
   "dependencies": {
     "apple-data-compression": "^0.1.0",
     "bloodline": "^1.0.1",
+    "cyclic-32": "^1.0.1",
     "plist": "^2.0.1",
     "seek-bzip": "^1.0.5"
   },

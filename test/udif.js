@@ -3,6 +3,7 @@ var fs = require( 'fs' )
 var path = require( 'path' )
 var UDIF = require( '..' )
 var images = require( './data' )
+var inspect = require( './inspect' )
 
 const DATADIR = path.join( __dirname, 'data' )
 
@@ -34,6 +35,7 @@ context( 'UDIF.Image', function() {
       })
 
       specify( 'image.footer.dataForkLength', function() {
+        console.log( inspect( image ) )
         assert.equal( image.footer.dataForkLength, data.dataForkLength )
       })
 
