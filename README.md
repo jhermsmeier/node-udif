@@ -96,23 +96,19 @@ KolyBlock {
   flags: 1,
   runningDataForkOffset: 0,
   dataForkOffset: 0,
-  dataForkLength: 58423161,
+  dataForkLength: 6585140266,
   resourceForkOffset: 0,
   resourceForkLength: 0,
   segmentNumber: 1,
   segmentCount: 1,
-  segmentId: <Buffer 57 7e fa dc 18 96 46 36 89 93 6d e6 59 6e 36 1c>,
-  dataChecksumType: 2,
-  dataChecksumSize: 32,
-  dataChecksum: '57751645',
-  xmlOffset: 58423161,
-  xmlLength: 18424,
-  reserved1: <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... >,
-  checksumType: 2,
-  checksumSize: 32,
-  checksum: '29dc317d',
+  segmentId: <Buffer 18 66 9e 31 fa 6 d 4 f 7 d aa d0 f2 50 12 8 f 49 54>,
+  dataChecksum: Checksum { type: 2, bits: 32, value: 'c2208200' },
+  xmlOffset: 6585140266,
+  xmlLength: 1752206,
+  reserved1: <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...>,
+  checksum: Checksum { type: 2, bits: 32, value: '3f40bb47' },
   imageVariant: 1,
-  sectorCount: 1228800,
+  sectorCount: 15178432,
   reserved2: 0,
   reserved3: 0,
   reserved4: 0,
@@ -125,131 +121,313 @@ The XML data is a [Property List](https://en.wikipedia.org/wiki/Property_list), 
 
 ```js
 dmg.open( function( error ) {
-  console.log( dmg.resources )
+  console.log( dmg.resourceFork )
 })
 ```
 
 ```js
-[{
-  id: -1,
-  attributes: 80,
-  name: 'Protective Master Boot Record (MBR : 0)',
-  coreFoundationName: 'Protective Master Boot Record (MBR : 0)',
-  map: BlockMap {
-    signature: 1835627368,
-    version: 1,
-    sectorNumber: 0,
-    sectorCount: 1,
-    dataOffset: 0,
-    buffersNeeded: 2056,
-    blockDescriptorCount: 0,
-    // reserved fields omitted for brevity
-    checksumType: 2,
-    checksumSize: 32,
-    checksum: 'baa01cf3',
-    blockCount: 2,
-    blocks: [
-      Block {
-        type: 2147483653,
-        description: 'UDZO (UDIF zlib-compressed)',
-        comment: '',
-        sectorNumber: 0,
-        sectorCount: 1,
-        compressedOffset: 0,
-        compressedLength: 30
-      },
-      Block {
-        type: 4294967295,
-        description: 'TERMINATOR',
-        comment: '',
-        sectorNumber: 1,
-        sectorCount: 0,
-        compressedOffset: 30,
-        compressedLength: 0
-      }
-    ]
-  }
-}, {
-  id: 0,
-  attributes: 80,
-  name: 'GPT Header (Primary GPT Header : 1)',
-  coreFoundationName: 'GPT Header (Primary GPT Header : 1)',
-  map: BlockMap {
-    signature: 1835627368,
-    version: 1,
-    sectorNumber: 1,
-    sectorCount: 1,
-    dataOffset: 0,
-    buffersNeeded: 2056,
-    blockDescriptorCount: 1,
-    // reserved fields omitted for brevity
-    checksumType: 2,
-    checksumSize: 32,
-    checksum: '954e054b',
-    blockCount: 2,
-    blocks: [
-      Block {
-        type: 2147483653,
-        description: 'UDZO (UDIF zlib-compressed)',
-        comment: '',
-        sectorNumber: 0,
-        sectorCount: 1,
-        compressedOffset: 30,
-        compressedLength: 75
-      },
-      Block {
-        type: 4294967295,
-        description: 'TERMINATOR',
-        comment: '',
-        sectorNumber: 1,
-        sectorCount: 0,
-        compressedOffset: 105,
-        compressedLength: 0
-      }
-    ]
-  }
-},
-// ... more omitted for brevity ...
 {
-  id: 6,
-  attributes: 80,
-  name: 'GPT Header (Backup GPT Header : 7)',
-  coreFoundationName: 'GPT Header (Backup GPT Header : 7)',
-  map: BlockMap {
-    signature: 1835627368,
-    version: 1,
-    sectorNumber: 1228799,
-    sectorCount: 1,
-    dataOffset: 0,
-    buffersNeeded: 2056,
-    blockDescriptorCount: 7,
-    // reserved fields omitted for brevity
-    checksumType: 2,
-    checksumSize: 32,
-    checksum: 'beda967a',
-    blockCount: 2,
-    blocks: [
-      Block {
-        type: 2147483653,
-        description: 'UDZO (UDIF zlib-compressed)',
-        comment: '',
-        sectorNumber: 0,
-        sectorCount: 1,
-        compressedOffset: 58423085,
-        compressedLength: 76
-      },
-      Block {
-        type: 4294967295,
-        description: 'TERMINATOR',
-        comment: '',
-        sectorNumber: 1,
-        sectorCount: 0,
-        compressedOffset: 58423161,
-        compressedLength: 0
-      }
-    ]
-  }
-}]
+  blkx: [{
+    id: -1,
+    attributes: 80,
+    name: 'Driver Descriptor Map (DDM : 0)',
+    coreFoundationName: 'Driver Descriptor Map (DDM : 0)',
+    map: BlockMap {
+      signature: 1835627368,
+      version: 1,
+      sectorNumber: 0,
+      sectorCount: 1,
+      dataOffset: 0,
+      buffersNeeded: 520,
+      blockDescriptorCount: 0,
+      reserved1: 0,
+      reserved2: 0,
+      reserved3: 0,
+      reserved4: 0,
+      reserved5: 0,
+      reserved6: 0,
+      checksum: Checksum { type: 2, bits: 32, value: '698a85ed' },
+      blockCount: 2,
+      blocks: [
+        Block {
+          type: 2147483653,
+          description: 'UDZO (zlib-compressed)',
+          comment: '',
+          sectorNumber: 0,
+          sectorCount: 1,
+          compressedOffset: 0,
+          compressedLength: 22
+        },
+        Block {
+          type: 4294967295,
+          description: 'TERMINATOR',
+          comment: '',
+          sectorNumber: 1,
+          sectorCount: 0,
+          compressedOffset: 22,
+          compressedLength: 0
+        }
+      ]
+    }
+  }, {
+    id: 0,
+    attributes: 80,
+    name: 'WINDOWSSUPPORT (Apple_ISO : 1)',
+    coreFoundationName: 'WINDOWSSUPPORT (Apple_ISO : 1)',
+    map: BlockMap {
+      signature: 1835627368,
+      version: 1,
+      sectorNumber: 1,
+      sectorCount: 3,
+      dataOffset: 0,
+      buffersNeeded: 520,
+      blockDescriptorCount: 1,
+      reserved1: 0,
+      reserved2: 0,
+      reserved3: 0,
+      reserved4: 0,
+      reserved5: 0,
+      reserved6: 0,
+      checksum: Checksum { type: 2, bits: 32, value: '6c1ce17e' },
+      blockCount: 2,
+      blocks: [
+        Block {
+          type: 2147483653,
+          description: 'UDZO (zlib-compressed)',
+          comment: '',
+          sectorNumber: 0,
+          sectorCount: 3,
+          compressedOffset: 22,
+          compressedLength: 24
+        },
+        Block {
+          type: 4294967295,
+          description: 'TERMINATOR',
+          comment: '',
+          sectorNumber: 3,
+          sectorCount: 0,
+          compressedOffset: 46,
+          compressedLength: 0
+        }
+      ]
+    }
+  }, {
+    id: 1,
+    attributes: 80,
+    name: 'Apple (Apple_partition_map : 2)',
+    coreFoundationName: 'Apple (Apple_partition_map : 2)',
+    map: BlockMap {
+      signature: 1835627368,
+      version: 1,
+      sectorNumber: 4,
+      sectorCount: 60,
+      dataOffset: 0,
+      buffersNeeded: 520,
+      blockDescriptorCount: 2,
+      reserved1: 0,
+      reserved2: 0,
+      reserved3: 0,
+      reserved4: 0,
+      reserved5: 0,
+      reserved6: 0,
+      checksum: Checksum { type: 2, bits: 32, value: '115fc68e' },
+      blockCount: 2,
+      blocks: [
+        Block {
+          type: 2147483653,
+          description: 'UDZO (zlib-compressed)',
+          comment: '',
+          sectorNumber: 0,
+          sectorCount: 60,
+          compressedOffset: 46,
+          compressedLength: 358
+        },
+        Block {
+          type: 4294967295,
+          description: 'TERMINATOR',
+          comment: '',
+          sectorNumber: 60,
+          sectorCount: 0,
+          compressedOffset: 404,
+          compressedLength: 0
+        }
+      ]
+    }
+  }, {
+    id: 2,
+    attributes: 80,
+    name: 'Macintosh (Apple_Driver_ATAPI : 3)',
+    coreFoundationName: 'Macintosh (Apple_Driver_ATAPI : 3)',
+    map: BlockMap {
+      signature: 1835627368,
+      version: 1,
+      sectorNumber: 64,
+      sectorCount: 2020420,
+      dataOffset: 0,
+      buffersNeeded: 520,
+      blockDescriptorCount: 3,
+      reserved1: 0,
+      reserved2: 0,
+      reserved3: 0,
+      reserved4: 0,
+      reserved5: 0,
+      reserved6: 0,
+      checksum: Checksum { type: 2, bits: 32, value: 'b2bb86f8' },
+      blockCount: 3948,
+      blocks: [
+        Block {
+          type: 2147483653,
+          description: 'UDZO (zlib-compressed)',
+          comment: '',
+          sectorNumber: 0,
+          sectorCount: 512,
+          compressedOffset: 404,
+          compressedLength: 25147
+        },
+        Block {
+          type: 2147483653,
+          description: 'UDZO (zlib-compressed)',
+          comment: '',
+          sectorNumber: 512,
+          sectorCount: 512,
+          compressedOffset: 25551,
+          compressedLength: 29149
+        },
+        ... more items
+      ]
+    }
+  }, {
+    id: 3,
+    attributes: 80,
+    name: ' (Apple_Free : 4)',
+    coreFoundationName: ' (Apple_Free : 4)',
+    map: BlockMap {
+      signature: 1835627368,
+      version: 1,
+      sectorNumber: 2020484,
+      sectorCount: 4,
+      dataOffset: 0,
+      buffersNeeded: 0,
+      blockDescriptorCount: 4,
+      reserved1: 0,
+      reserved2: 0,
+      reserved3: 0,
+      reserved4: 0,
+      reserved5: 0,
+      reserved6: 0,
+      checksum: Checksum { type: 2, bits: 32, value: '00000000' },
+      blockCount: 2,
+      blocks: [
+        Block {
+          type: 2,
+          description: 'FREE (unallocated)',
+          comment: '',
+          sectorNumber: 0,
+          sectorCount: 4,
+          compressedOffset: 984141554,
+          compressedLength: 0
+        },
+        Block {
+          type: 4294967295,
+          description: 'TERMINATOR',
+          comment: '',
+          sectorNumber: 4,
+          sectorCount: 0,
+          compressedOffset: 984141554,
+          compressedLength: 0
+        }
+      ]
+    }
+  }, {
+    id: 4,
+    attributes: 80,
+    name: 'Mac_OS_X (Apple_HFS : 5)',
+    coreFoundationName: 'Mac_OS_X (Apple_HFS : 5)',
+    map: BlockMap {
+      signature: 1835627368,
+      version: 1,
+      sectorNumber: 2020488,
+      sectorCount: 13157944,
+      dataOffset: 0,
+      buffersNeeded: 520,
+      blockDescriptorCount: 5,
+      reserved1: 0,
+      reserved2: 0,
+      reserved3: 0,
+      reserved4: 0,
+      reserved5: 0,
+      reserved6: 0,
+      checksum: Checksum { type: 2, bits: 32, value: '39ce04b6' },
+      blockCount: 25387,
+      blocks: [
+        Block {
+          type: 2147483646,
+          description: 'COMMENT',
+          comment: '+beg',
+          sectorNumber: 0,
+          sectorCount: 0,
+          compressedOffset: 984141554,
+          compressedLength: 0
+        },
+        Block {
+          type: 2147483653,
+          description: 'UDZO (zlib-compressed)',
+          comment: '',
+          sectorNumber: 0,
+          sectorCount: 512,
+          compressedOffset: 984141554,
+          compressedLength: 1812
+        },
+        ... more items
+      ]
+    }
+  }],
+  cSum: [{
+    Attributes: '0x0000',
+    Data: <Buffer 01 00 02 00 00 00 00 00 00 00>,
+    ID: '0',
+    Name: null
+  }, {
+    Attributes: '0x0000',
+    Data: <Buffer 01 00 02 00 00 00 10 fc a8 3f>,
+    ID: '1',
+    Name: null
+  }, {
+    Attributes: '0x0000',
+    Data: <Buffer 01 00 02 00 00 00 10 37 71 ef>,
+    ID: '2',
+    Name: null
+  }],
+  nsiz: [{
+    Attributes: '0x0000',
+    Data: <Buffer 3 c 3 f 78 6 d 6 c 20 76 65 72 73 69 6 f 6e 3 d 22 31 2e 30 22 20 65 6e 63 6 f 64 69 6e 67 3 d 22 55 54 46 2 d 38 22 3 f 3e 0 a 3 c 21 44 4 f 43 54 59 50 45 20 70 ...>,
+    ID: '0',
+    Name: null
+  }, {
+    Attributes: '0x0000',
+    Data: <Buffer 3 c 3 f 78 6 d 6 c 20 76 65 72 73 69 6 f 6e 3 d 22 31 2e 30 22 20 65 6e 63 6 f 64 69 6e 67 3 d 22 55 54 46 2 d 38 22 3 f 3e 0 a 3 c 21 44 4 f 43 54 59 50 45 20 70 ...>,
+    ID: '1',
+    Name: null
+  }, {
+    Attributes: '0x0000',
+    Data: <Buffer 3 c 3 f 78 6 d 6 c 20 76 65 72 73 69 6 f 6e 3 d 22 31 2e 30 22 20 65 6e 63 6 f 64 69 6e 67 3 d 22 55 54 46 2 d 38 22 3 f 3e 0 a 3 c 21 44 4 f 43 54 59 50 45 20 70 ...>,
+    ID: '2',
+    Name: null
+  }],
+  plst: [{
+    Attributes: '0x0050',
+    Data: <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...>,
+    ID: '0',
+    Name: null
+  }],
+  size: [{
+    Attributes: '0x0000',
+    Data: <Buffer 05 00 01 00 00 00 00 60 8 c 91 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...>,
+    ID: '2',
+    Name: null
+  }]
+}
+
 ```
 
 ## References
