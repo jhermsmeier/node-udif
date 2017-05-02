@@ -10,6 +10,16 @@
 $ npm install --save udif
 ```
 
+## Related Modules
+
+- [apple-data-compression](https://github.com/jhermsmeier/node-apple-data-compression) – Apple Data Compression (ADC) Scheme
+- [blockdevice](https://github.com/jhermsmeier/node-blockdevice) – Read from / write to block devices
+- [disk](https://github.com/jhermsmeier/node-disk) – Handle block devices as formatted disks
+
+### In Use
+
+- [Etcher](https://github.com/resin-io/etcher) – Flash OS images to SD cards & USB drives, safely and easily (https://etcher.io)
+
 ## Usage
 
 ```js
