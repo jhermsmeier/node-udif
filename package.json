@@ -23,7 +23,7 @@
     "seek-bzip": "^1.0.5"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "mocha": "^3.5.0"
   },
   "peerDependencies": {},
   "optionalDependencies": {},
