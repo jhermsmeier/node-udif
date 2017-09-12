@@ -74,8 +74,8 @@ context( 'UDIF.ReadStream', function() {
 
         UDIF.createReadStream( path.join( DATADIR, data.filename ) )
           .on( 'error', done )
-          .on( 'data', function( chunk ) {
-            this.close()
+          .once( 'open', function( chunk ) {
+            process.nextTick(() => this.close())
           })
           .on( 'close', function() {
             done()
@@ -87,8 +87,8 @@ context( 'UDIF.ReadStream', function() {
 
         UDIF.createReadStream( path.join( DATADIR, data.filename ) )
           .on( 'error', done )
-          .on( 'data', function( chunk ) {
-            this.destroy()
+          .on( 'open', function( chunk ) {
+            process.nextTick(() => this.destroy())
           })
           .on( 'close', function() {
             done()
