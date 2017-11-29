@@ -86,6 +86,18 @@ UDIF.createReadStream( 'path/to/image.dmg' )
   .pipe( fs.createWriteStream( '/path/to/destination.img' ) )
 ```
 
+### Using a custom file system
+
+```js
+var dmg = new UDIF.Image( 'https://github.com/resin-io/etcher/releases/download/v1.2.0/Etcher-1.2.0.dmg', {
+  fs: new HttpFs()
+})
+
+dmg.open( function( error ) {
+  // ...
+})
+```
+
 ### Inspecting the UDIF footer
 
 The footer (aka the "Koly Block") contains pointers to the XML metadata,
