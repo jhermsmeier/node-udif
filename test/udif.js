@@ -1,6 +1,7 @@
 var assert = require( 'assert' )
 var fs = require( 'fs' )
 var path = require( 'path' )
+var stream = require( 'stream' )
 var UDIF = require( '..' )
 var images = require( './data' )
 
@@ -98,4 +99,52 @@ context( 'UDIF.ReadStream', function() {
 
     })
   })
+
+  context( 'Compression Methods', function() {
+
+    var expected = fs.readFileSync( path.join( __dirname, 'data', 'decompressed.img' ) )
+    var sources = [
+      'compression-adc.dmg',
+      'compression-bz2.dmg',
+      // NOTE: LZFSE not yet supported
+      // 'compression-lzfse.dmg',
+      'compression-raw.dmg',
+      'compression-zlib.dmg',
+    ].map( f => path.join( __dirname, 'data', f ) )
+
+    context( 'source image equality', function() {
+
+      sources.forEach(( filename ) => {
+
+        var testName = path.basename( filename, '.dmg' )
+          .replace( 'compression-', '' )
+          .toUpperCase()
+
+        specify( testName, function( done ) {
+
+          UDIF.getUncompressedSize( filename, ( error, size ) => {
+            if( error ) return done( error )
+            var actual = Buffer.allocUnsafe( size )
+            var offset = 0
+            var readStream = UDIF.createReadStream( filename )
+              .on( 'error', done )
+              .on( 'data', ( chunk ) => {
+                chunk.copy( actual, offset )
+                offset += chunk.length
+              })
+              .once( 'end', () => {
+                assert.ok( expected.equals( actual ) )
+                assert.equal( expected.length, size )
+                done()
+              })
+          })
+
+        })
+
+      })
+
+    })
+
+  })
+
 })
