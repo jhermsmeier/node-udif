@@ -128,6 +128,9 @@ context( 'UDIF.ReadStream', function() {
             var offset = 0
             var readStream = UDIF.createReadStream( filename )
               .on( 'error', done )
+              // NOTE: This can catch & bubble up read/push after EOD errors,
+              // which have previously gone unnoticed
+              .pipe( new stream.PassThrough() )
               .on( 'data', ( chunk ) => {
                 chunk.copy( actual, offset )
                 offset += chunk.length
