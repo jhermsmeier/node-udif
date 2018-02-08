@@ -18,8 +18,8 @@
   "main": "lib/udif.js",
   "dependencies": {
     "apple-data-compression": "^0.2.0",
-    "bloodline": "^1.0.1",
     "plist": "^2.0.1",
+    "readable-stream": "^2.3.3",
     "seek-bzip": "^1.0.5"
   },
   "devDependencies": {
