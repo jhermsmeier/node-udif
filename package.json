@@ -1,6 +1,6 @@
 {
   "name": "udif",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Apple Universal Disk Image Format (UDIF/DMG)",
   "license": "MIT",
   "author": "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
