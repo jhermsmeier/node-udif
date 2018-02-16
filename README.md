@@ -86,6 +86,22 @@ UDIF.createReadStream( 'path/to/image.dmg' )
   .pipe( fs.createWriteStream( '/path/to/destination.img' ) )
 ```
 
+### Sparse streams
+
+```js
+var sparseStream = UDIF.createSparseReadStream( 'path/to/image.dmg' )
+```
+
+Sparse readstreams are in `objectMode` and will emit objects of the shape `{ buffer, position }`.
+This means you'll need a writable stream that is also in `objectMode` and knows how to handle these.
+For the sake of brevity, the following example only demonstrates passing a chunk's properties to `fs.write()`;
+
+```js
+sparseStream.on( 'data', function( chunk ) {
+  fs.writeSync( fd, chunk.buffer, 0, chunk.buffer.length, chunk.position )
+})
+```
+
 ### Using a custom file system
 
 ```js
