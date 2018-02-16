@@ -10,15 +10,15 @@
 $ npm install --save udif
 ```
 
+## Used by
+
+- **[Etcher](https://github.com/resin-io/etcher)** to support Apple's disk image format (.dmg)
+
 ## Related Modules
 
-- [apple-data-compression](https://github.com/jhermsmeier/node-apple-data-compression) – Apple Data Compression (ADC) Scheme
+- [apple-partition-map](https://github.com/jhermsmeier/node-gpt) – Parse / construct Apple Partition Maps
 - [blockdevice](https://github.com/jhermsmeier/node-blockdevice) – Read from / write to block devices
-- [disk](https://github.com/jhermsmeier/node-disk) – Handle block devices as formatted disks
-
-### In Use
-
-- [Etcher](https://github.com/resin-io/etcher) – Flash OS images to SD cards & USB drives, safely and easily (https://etcher.io)
+- [disk](https://github.com/jhermsmeier/node-disk) – Disk / image toolbox
 
 ## Usage
 
