@@ -151,3 +151,58 @@ context( 'UDIF.ReadStream', function() {
   })
 
 })
+
+context( 'UDIF.SparseReadStream', function() {
+
+  context( 'Compression Methods', function() {
+
+    var expected = fs.readFileSync( path.join( __dirname, 'data', 'decompressed.img' ) )
+    var sources = [
+      'compression-adc.dmg',
+      'compression-bz2.dmg',
+      // NOTE: LZFSE not yet supported
+      // 'compression-lzfse.dmg',
+      'compression-raw.dmg',
+      'compression-zlib.dmg',
+    ].map( f => path.join( __dirname, 'data', f ) )
+
+    context( 'source image equality', function() {
+
+      sources.forEach(( filename ) => {
+
+        var testName = path.basename( filename, '.dmg' )
+          .replace( 'compression-', '' )
+          .toUpperCase()
+
+        specify( testName, function( done ) {
+
+          UDIF.getUncompressedSize( filename, ( error, size ) => {
+            if( error ) return done( error )
+            var actual = Buffer.alloc( size )
+            var chunkCount = 0
+            var readStream = UDIF.createSparseReadStream( filename )
+              .on( 'error', done )
+              // NOTE: This can catch & bubble up read/push after EOD errors,
+              // which have previously gone unnoticed
+              .pipe( new stream.PassThrough({ objectMode: true }) )
+              .on( 'data', ( chunk ) => {
+                chunk.buffer.copy( actual, chunk.position )
+                chunkCount++
+              })
+              .once( 'end', () => {
+                // assert.equal( chunkCount, 0 )
+                assert.ok( expected.equals( actual ), 'Buffer equality' )
+                assert.equal( expected.length, size )
+                done()
+              })
+          })
+
+        })
+
+      })
+
+    })
+
+  })
+
+})
