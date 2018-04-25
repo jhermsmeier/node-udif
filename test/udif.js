@@ -71,6 +71,32 @@ context( 'UDIF.ReadStream', function() {
 
       })
 
+      specify( 'stream an already opened image', function( done ) {
+
+        var image = new UDIF.Image( path.join( DATADIR, data.filename ) )
+        var bytesRead = 0
+
+        image.open( function(error, fd) {
+
+          if( error ) {
+            return done( error )
+          }
+
+          image.createReadStream()
+            .on( 'error', done )
+            .on( 'data', function( chunk ) {
+              bytesRead += chunk.length
+              chunk = null
+            })
+            .on( 'end', function() {
+              assert.equal( bytesRead, data.uncompressedSize )
+              done()
+            })
+
+        })
+
+      })
+
       specify( 'can close while reading', function( done ) {
 
         UDIF.createReadStream( path.join( DATADIR, data.filename ) )
