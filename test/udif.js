@@ -204,7 +204,7 @@ context( 'UDIF.SparseReadStream', function() {
 
           UDIF.getUncompressedSize( filename, ( error, size ) => {
             if( error ) return done( error )
-            var actual = Buffer.allocUnsafe( size )
+            var actual = Buffer.alloc( size )
             var chunkCount = 0
             var readStream = UDIF.createSparseReadStream( filename )
               .on( 'error', done )
