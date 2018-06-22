@@ -34,7 +34,7 @@ image.open(( error ) => {
     if( error ) throw error
     var start = Date.now()
     var first = true
-    UDIF.createReadStream( filename )
+    UDIF.createSparseReadStream( filename )
       .on( 'end', function() {
         process.stdout.write( `Done.\n` )
       })
