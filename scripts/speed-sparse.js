@@ -31,23 +31,35 @@ image.open(( error ) => {
   console.log( 'uncompressed size:', mb(image.getUncompressedSize()) )
   process.stdout.write( '\n' )
   image.close(( error ) => {
-    if( error ) throw error
+
+    if( error ) {
+      throw error
+    }
+
     var start = Date.now()
-    var first = true
-    UDIF.createSparseReadStream( filename )
-      .on( 'end', function() {
-        process.stdout.write( `Done.\n` )
-      })
-      .on( 'readable', function() {
-        while( this.read() ) continue
-        var time = ( Date.now() - start ) / 1000
-        if( first ) {
-          process.stdout.write( '\n\n' )
-          first = false
-        }
-        process.stdout.write( ERASELINE )
-        process.stdout.write( `Bytes read: ${mb(this.bytesRead)} (${mb((this.bytesRead/time)|0)}/s)\n` )
-        process.stdout.write( `Bytes written: ${mb(this.bytesWritten)} (${mb((this.bytesWritten/time)|0)}/s)\n` )
-      })
+    var time = 0
+
+    var readable = UDIF.createSparseReadStream( filename )
+
+    function tick() {
+      process.stdout.write( `${ERASELINE}Bytes read: ${mb(readable.bytesRead)} (${mb((readable.bytesRead/time)|0)}/s)
+Bytes written: ${mb(readable.bytesWritten)} (${mb((readable.bytesWritten/time)|0)}/s)\n` )
+    }
+
+    var timer = setInterval( tick, 250 )
+
+    readable.on( 'end', function() {
+      process.stdout.write( `Done.\n` )
+      clearInterval( timer )
+    }).on( 'readable', function() {
+      time = ( Date.now() - start ) / 1000
+      while( this.read() ) {
+        continue
+      }
+    })
+
+    process.stdout.write( '\n\n' )
+    tick()
+
   })
 })
