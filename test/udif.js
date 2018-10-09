@@ -117,9 +117,7 @@ context( 'UDIF.ReadStream', function() {
           .on( 'data', function( chunk ) {
             this.destroy()
           })
-          .on( 'close', function() {
-            done()
-          })
+          .on( 'close', done )
 
       })
 
