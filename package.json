@@ -19,11 +19,11 @@
   "dependencies": {
     "apple-data-compression": "^0.4.0",
     "plist": "^3.0.1",
-    "readable-stream": "^3.1.1",
+    "readable-stream": "^3.3.0",
     "seek-bzip": "^1.0.5"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^6.1.4"
   },
   "peerDependencies": {},
   "optionalDependencies": {},
