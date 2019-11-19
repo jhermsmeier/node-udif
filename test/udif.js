@@ -42,6 +42,15 @@ context( 'UDIF.Image', function() {
         assert.equal( image.getUncompressedSize(), data.uncompressedSize )
       })
 
+      specify( 'image.verifyData()', function( done ) {
+        image.verifyData( function( error, verified ) {
+          if( !error ) {
+            assert.strictEqual( verified, true )
+          }
+          done()
+        })
+      })
+
       specify( 'image.close()', function( done ) {
         image.close( done )
       })
