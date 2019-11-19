@@ -117,9 +117,7 @@ context( 'UDIF.ReadStream', function() {
           .on( 'data', function( chunk ) {
             this.destroy()
           })
-          .on( 'close', function() {
-            done()
-          })
+          .on( 'close', done )
 
       })
 
@@ -179,6 +177,79 @@ context( 'UDIF.ReadStream', function() {
 })
 
 context( 'UDIF.SparseReadStream', function() {
+
+  images.forEach( function( data ) {
+    context( data.filename, function() {
+
+      specify( 'read & decompress image', function( done ) {
+
+        var bytesRead = 0
+
+        UDIF.createSparseReadStream( path.join( DATADIR, data.filename ) )
+          .on( 'error', done )
+          .on( 'data', function( block ) {
+            bytesRead += block.buffer.length
+            block = null
+          })
+          .on( 'end', function() {
+            assert.equal( bytesRead, data.mappedSize )
+            done()
+          })
+
+      })
+
+      specify( 'stream an already opened image', function( done ) {
+
+        var image = new UDIF.Image( path.join( DATADIR, data.filename ) )
+        var bytesRead = 0
+
+        image.open( function(error, fd) {
+
+          if( error ) {
+            return done( error )
+          }
+
+          image.createSparseReadStream()
+            .on( 'error', done )
+            .on( 'data', function( block ) {
+              bytesRead += block.buffer.length
+              block = null
+            })
+            .on( 'end', function() {
+              assert.equal( bytesRead, data.mappedSize )
+              done()
+            })
+
+        })
+
+      })
+
+      specify( 'can close while reading', function( done ) {
+
+        UDIF.createSparseReadStream( path.join( DATADIR, data.filename ) )
+          .on( 'error', done )
+          .on( 'data', function( block ) {
+            this.close()
+          })
+          .on( 'close', function() {
+            done()
+          })
+
+      })
+
+      specify( 'can destroy while reading', function( done ) {
+
+        UDIF.createSparseReadStream( path.join( DATADIR, data.filename ) )
+          .on( 'error', done )
+          .on( 'data', function( block ) {
+            this.destroy()
+          })
+          .on( 'close', done )
+
+      })
+
+    })
+  })
 
   context( 'Compression Methods', function() {
 
