@@ -18,7 +18,7 @@
   "main": "lib/udif.js",
   "dependencies": {
     "apple-data-compression": "^0.4.1",
-    "apple-plist": "^0.1.0",
+    "apple-plist": "^0.3.0",
     "cyclic-32": "^1.1.0",
     "readable-stream": "^3.4.0",
     "seek-bzip": "^1.0.5"
