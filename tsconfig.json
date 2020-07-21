@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"typeRoots": ["typings", "node_modules/@types"],
+		"module": "commonjs",
+		"outDir": "build",
+		"sourceMap": true,
+		"declaration": true,
+		"target": "es2018",
+		"noUnusedLocals": true,
+		"noUnusedParameters": true
+	},
+	"include": [
+		"lib"
+	]
+}

@@ -15,19 +15,24 @@
     "udif",
     "universal"
   ],
-  "main": "lib/udif.js",
+  "files": [
+    "build",
+    "typings"
+  ],
+  "main": "build/index.js",
   "dependencies": {
     "apple-data-compression": "^0.4.1",
     "apple-plist": "^0.3.0",
     "cyclic-32": "^1.1.0",
-    "readable-stream": "^3.4.0",
     "seek-bzip": "^1.0.5"
   },
   "devDependencies": {
-    "mocha": "^6.2.2"
+    "@balena/lint": "^5.1.0",
+    "@types/mocha": "^8.0.0",
+    "mocha": "^8.0.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
-  "peerDependencies": {},
-  "optionalDependencies": {},
   "homepage": "https://github.com/jhermsmeier/node-udif",
   "repository": {
     "type": "git",
@@ -37,6 +42,10 @@
     "url": "https://github.com/jhermsmeier/node-udif/issues"
   },
   "scripts": {
-    "test": "mocha"
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "mocha -r ts-node/register test/*.spec.ts",
+    "lint": "balena-lint --typescript lib test",
+    "lint-fix": "balena-lint --fix --typescript lib test"
   }
 }
