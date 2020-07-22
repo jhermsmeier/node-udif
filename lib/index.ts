@@ -1,7 +1,6 @@
 import * as zlib from 'zlib';
 import * as bunzip from 'seek-bzip';
 import * as adc from 'apple-data-compression';
-import { ReadableOptions } from 'stream';
 
 import { Checksum } from './checksum';
 import { Image } from './image';
@@ -39,22 +38,6 @@ export enum BLOCK {
 	COMMENT = 0x7ffffffe,
 	TERMINATOR = 0xffffffff,
 }
-
-/** Create a ReadStream for a given image */
-export const createReadStream = function (
-	image: string | Image,
-	options: ReadableOptions = {},
-) {
-	return new ReadStream(image, options);
-};
-
-/** Create a SparseReadStream for a given image */
-export const createSparseReadStream = function (
-	image: string | Image,
-	options: ReadableOptions = {},
-) {
-	return new SparseReadStream(image, options);
-};
 
 /** Get the uncompressed size of a given image */
 export function getUncompressedSize(

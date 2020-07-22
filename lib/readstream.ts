@@ -1,6 +1,6 @@
 import { Readable, ReadableOptions } from 'stream';
 
-import { Image, ImageOptions } from './image';
+import { Image } from './image';
 import { BLOCK, SECTOR_SIZE, decompressBlock } from './';
 
 export class ReadStream extends Readable {
@@ -14,13 +14,9 @@ export class ReadStream extends Readable {
 	_toRead: number | null = null;
 	_blockBuffer = Buffer.allocUnsafe(2 * 1024 * 1024);
 
-	image: Image;
-
 	/** UDIF Image ReadStream */
-	// TODO: cleanup, no string
-	constructor(image: string | Image, options: ImageOptions & ReadableOptions) {
+	constructor(public readonly image: Image, options: ReadableOptions) {
 		super(options);
-		this.image = !(image instanceof Image) ? new Image(image, options) : image;
 		this.open();
 	}
 

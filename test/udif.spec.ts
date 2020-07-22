@@ -71,7 +71,8 @@ context('UDIF.ReadStream', function () {
 			specify('read & decompress image', function (done) {
 				let bytesRead = 0;
 
-				UDIF.createReadStream(path.join(DATADIR, data.filename))
+				new UDIF.Image(path.join(DATADIR, data.filename))
+					.createReadStream()
 					.on('error', done)
 					.on('data', function (chunk: Buffer) {
 						bytesRead += chunk.length;
@@ -105,7 +106,8 @@ context('UDIF.ReadStream', function () {
 			});
 
 			specify('can close while reading', function (done) {
-				UDIF.createReadStream(path.join(DATADIR, data.filename))
+				new UDIF.Image(path.join(DATADIR, data.filename))
+					.createReadStream()
 					.on('error', done)
 					.on('data', function (this: UDIF.ReadStream) {
 						this.close();
@@ -116,7 +118,8 @@ context('UDIF.ReadStream', function () {
 			});
 
 			specify('can destroy while reading', function (done) {
-				UDIF.createReadStream(path.join(DATADIR, data.filename))
+				new UDIF.Image(path.join(DATADIR, data.filename))
+					.createReadStream()
 					.on('error', done)
 					.on('data', function (this: UDIF.ReadStream) {
 						this.destroy();
@@ -158,7 +161,8 @@ context('UDIF.ReadStream', function () {
 							}
 							const actual = Buffer.allocUnsafe(size);
 							let offset = 0;
-							UDIF.createReadStream(filename)
+							new UDIF.Image(path.join(filename))
+								.createReadStream()
 								.on('error', done)
 								// NOTE: This can catch & bubble up read/push after EOD errors,
 								// which have previously gone unnoticed
@@ -186,7 +190,8 @@ context('UDIF.SparseReadStream', function () {
 			specify('read & decompress image', function (done) {
 				let bytesRead = 0;
 
-				UDIF.createSparseReadStream(path.join(DATADIR, data.filename))
+				new UDIF.Image(path.join(DATADIR, data.filename))
+					.createSparseReadStream()
 					.on('error', done)
 					.on('data', function (block: { buffer: Buffer; position: number }) {
 						bytesRead += block.buffer.length;
@@ -221,7 +226,8 @@ context('UDIF.SparseReadStream', function () {
 			});
 
 			specify('can close while reading', function (done) {
-				UDIF.createSparseReadStream(path.join(DATADIR, data.filename))
+				new UDIF.Image(path.join(DATADIR, data.filename))
+					.createSparseReadStream()
 					.on('error', done)
 					.on('data', function (this: UDIF.SparseReadStream) {
 						this.close();
@@ -232,7 +238,8 @@ context('UDIF.SparseReadStream', function () {
 			});
 
 			specify('can destroy while reading', function (done) {
-				UDIF.createSparseReadStream(path.join(DATADIR, data.filename))
+				new UDIF.Image(path.join(DATADIR, data.filename))
+					.createSparseReadStream()
 					.on('error', done)
 					.on('data', function (this: UDIF.SparseReadStream) {
 						this.destroy();
@@ -273,7 +280,8 @@ context('UDIF.SparseReadStream', function () {
 								return done();
 							}
 							const actual = Buffer.alloc(size);
-							UDIF.createSparseReadStream(filename)
+							new UDIF.Image(path.join(filename))
+								.createSparseReadStream()
 								.on('error', done)
 								// NOTE: This can catch & bubble up read/push after EOD errors,
 								// which have previously gone unnoticed

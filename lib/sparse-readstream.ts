@@ -1,6 +1,6 @@
 import { ReadableOptions } from 'stream';
 
-import { Image, ImageOptions } from './image';
+import { Image } from './image';
 import { ReadStream } from './readstream';
 import { decompressBlock, BLOCK, SECTOR_SIZE } from './';
 
@@ -8,11 +8,7 @@ export class SparseReadStream extends ReadStream {
 	_blockBuffer = Buffer.allocUnsafe(2 * 1024 * 1024);
 
 	/** UDIF Image SparseReadStream */
-	// TODO: cleanup, no string
-	constructor(
-		image: string | Image,
-		options: ImageOptions & ReadableOptions = {},
-	) {
+	constructor(image: Image, options: ReadableOptions = {}) {
 		super(image, { objectMode: true, ...options });
 	}
 
