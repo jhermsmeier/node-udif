@@ -1,3 +1,4 @@
+import { promises as fs, createReadStream as CRS } from 'fs';
 import * as zlib from 'zlib';
 import * as bunzip from 'seek-bzip';
 import * as adc from 'apple-data-compression';
@@ -39,20 +40,29 @@ export enum BLOCK {
 	TERMINATOR = 0xffffffff,
 }
 
-/** Get the uncompressed size of a given image */
-export function getUncompressedSize(
-	filename: string,
-	callback: (error?: Error | null, size?: number) => void,
-) {
-	const dmg = new Image(filename);
-	dmg.open((error) => {
-		if (error) {
-			return void callback(error);
-		}
-		const size = dmg.getUncompressedSize();
-		dmg.close((err) => {
-			callback(err, size);
+export async function withOpenImage<T>(
+	filePath: string,
+	fn: (image: Image) => Promise<T>,
+): Promise<T> {
+	const handle = await fs.open(filePath, 'r');
+	try {
+		const image = new Image({
+			size: (await handle.stat()).size,
+			read: handle.read.bind(handle),
+			createReadStream: async (start = 0, end = Infinity) =>
+			CRS('', { fd: handle.fd, start, end }),
 		});
+		await image.ready;
+		return await fn(image);
+	} finally {
+		await handle.close();
+	}
+}
+
+/** Get the uncompressed size of a given image */
+export async function getUncompressedSize(filename: string): Promise<number> {
+	return await withOpenImage(filename, async (image: Image) => {
+		return await image.getUncompressedSize();
 	});
 }
 
@@ -61,36 +71,25 @@ export function decompressBlock(
 	type: BLOCK,
 	buffer: Buffer,
 	length: number,
-	callback: (error: Error | null, buffer?: Buffer) => void,
-) {
-	if (typeof length === 'function') {
-		callback = length;
-		length = buffer.length;
-	}
-
-	try {
-		switch (type) {
-			case BLOCK.UDZO:
-				callback(null, zlib.inflateSync(buffer));
-				break;
-			case BLOCK.UDBZ:
-				callback(null, bunzip.decode(buffer));
-				break;
-			case BLOCK.UDCO:
-				callback(null, adc.decompress(buffer.slice(0, length)));
-				break;
-			case BLOCK.LZFSE:
-				callback(new Error('Unsupported compression method: LZFSE'));
-				break;
-			default:
-				callback(
-					new Error(
-						'Unknown compression method for type "0x' + type.toString(16) + '"',
-					),
-				);
-				break;
-		}
-	} catch (error) {
-		callback(error);
+): Buffer {
+	buffer = buffer.slice(0, length);
+	switch (type) {
+		case BLOCK.UDZO:
+			return zlib.inflateSync(buffer);
+			break;
+		case BLOCK.UDBZ:
+			return bunzip.decode(buffer);
+			break;
+		case BLOCK.UDCO:
+			return adc.decompress(buffer);
+			break;
+		case BLOCK.LZFSE:
+			throw new Error('Unsupported compression method: LZFSE');
+			break;
+		default:
+			throw new Error(
+				`Unknown compression method for type "0x${type.toString(16)}"`,
+			);
+			break;
 	}
 }

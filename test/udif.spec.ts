@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as stream from 'stream';
+import { PassThrough } from 'stream';
 
 import * as UDIF from '../lib';
 
@@ -9,129 +9,64 @@ import { images } from './data';
 
 const DATADIR = path.join(__dirname, 'data');
 
-context('UDIF.getUncompressedSize()', function () {
-	images.forEach(function (data) {
-		specify(data.filename, function (done) {
-			UDIF.getUncompressedSize(path.join(DATADIR, data.filename), function (
-				error?: Error | null,
-				size?: number,
-			) {
-				assert.ifError(error);
-				assert.equal(size, data.uncompressedSize);
-				done();
-			});
+context('UDIF.getUncompressedSize()', () => {
+	images.forEach((data) => {
+		specify(data.filename, async () => {
+			const size = await UDIF.getUncompressedSize(
+				path.join(DATADIR, data.filename),
+			);
+			assert.equal(size, data.uncompressedSize);
 		});
 	});
 });
 
-context('UDIF.Image', function () {
-	images.forEach(function (data) {
-		context(data.filename, function () {
+context('UDIF.Image', () => {
+	images.forEach((data) => {
+		context(data.filename, async () => {
 			const filename = path.join(DATADIR, data.filename);
-			let image: UDIF.Image;
-
-			specify('new UDIF.Image()', function () {
-				image = new UDIF.Image(filename);
-			});
-
-			specify('image.open()', function (done) {
-				image.open(done);
-			});
-
-			specify('image.footer.dataForkLength', function () {
-				assert.equal(image.footer?.dataForkLength, data.dataForkLength);
-			});
-
-			specify('image.getUncompressedSize()', function () {
-				assert.equal(image.getUncompressedSize(), data.uncompressedSize);
-			});
-
-			specify('image.verifyData()', function (done) {
-				image.verifyData(function (
-					error: Error | null,
-					verified?: boolean | null,
-				) {
-					if (!error) {
-						assert.strictEqual(verified, true);
-					}
-					done();
+			await UDIF.withOpenImage(filename, async (image) => {
+				specify('image.footer.dataForkLength', () => {
+					assert.equal(image.footer?.dataForkLength, data.dataForkLength);
 				});
-			});
-
-			specify('image.close()', function (done) {
-				image.close(done);
+				specify('image.getUncompressedSize()', async () => {
+					assert.equal(await image.getUncompressedSize(), data.uncompressedSize);
+				});
+				specify('image.verifyData()', async () => {
+					const verified = await image.verifyData();
+					assert.strictEqual(verified, true);
+				});
 			});
 		});
 	});
 });
 
-context('UDIF.ReadStream', function () {
-	images.forEach(function (data) {
-		context(data.filename, function () {
-			specify('read & decompress image', function (done) {
-				let bytesRead = 0;
+context('UDIF.ReadStream', () => {
+	images.forEach((data) => {
+		context(data.filename, async () => {
+			await UDIF.withOpenImage(path.join(DATADIR, data.filename), async (image) => {
+				specify('read & decompress image', async () => {
+					let bytesRead = 0;
 
-				new UDIF.Image(path.join(DATADIR, data.filename))
-					.createReadStream()
-					.on('error', done)
-					.on('data', function (chunk: Buffer) {
-						bytesRead += chunk.length;
-					})
-					.on('end', function () {
-						assert.equal(bytesRead, data.uncompressedSize);
-						done();
+					const stream = await image.createReadStream();
+					await new Promise((resolve, reject) => {
+						stream
+							.on('error', reject)
+							.on('data', (chunk: Buffer) => {
+								bytesRead += chunk.length;
+							})
+							.on('end', () => {
+								assert.equal(bytesRead, data.uncompressedSize);
+								resolve();
+							});
 					});
-			});
-
-			specify('stream an already opened image', function (done) {
-				const image = new UDIF.Image(path.join(DATADIR, data.filename));
-				let bytesRead = 0;
-
-				image.open(function (error?: Error | null) {
-					if (error) {
-						return done(error);
-					}
-
-					image
-						.createReadStream()
-						.on('error', done)
-						.on('data', function (chunk: Buffer) {
-							bytesRead += chunk.length;
-						})
-						.on('end', function () {
-							assert.equal(bytesRead, data.uncompressedSize);
-							done();
-						});
 				});
-			});
-
-			specify('can close while reading', function (done) {
-				new UDIF.Image(path.join(DATADIR, data.filename))
-					.createReadStream()
-					.on('error', done)
-					.on('data', function (this: UDIF.ReadStream) {
-						this.close();
-					})
-					.on('close', function () {
-						done();
-					});
-			});
-
-			specify('can destroy while reading', function (done) {
-				new UDIF.Image(path.join(DATADIR, data.filename))
-					.createReadStream()
-					.on('error', done)
-					.on('data', function (this: UDIF.ReadStream) {
-						this.destroy();
-					})
-					.on('close', done);
 			});
 		});
 	});
 
-	context('Compression Methods', function () {
+	context('Compression Methods', () => {
 		const expected = fs.readFileSync(
-			path.join(__dirname, 'data', 'decompressed.img'),
+			path.join(DATADIR, 'decompressed.img'),
 		);
 		const sources = [
 			'compression-adc.dmg',
@@ -140,33 +75,27 @@ context('UDIF.ReadStream', function () {
 			// 'compression-lzfse.dmg',
 			'compression-raw.dmg',
 			'compression-zlib.dmg',
-		].map((f) => path.join(__dirname, 'data', f));
+		].map((f) => path.join(DATADIR, f));
 
-		context('source image equality', function () {
+		context('source image equality', () => {
 			sources.forEach((filename) => {
 				const testName = path
 					.basename(filename, '.dmg')
 					.replace('compression-', '')
 					.toUpperCase();
 
-				specify(testName, function (done) {
-					UDIF.getUncompressedSize(
-						filename,
-						(error?: Error | null, size?: number) => {
-							if (error) {
-								return done(error);
-							}
-							if (size === undefined) {
-								return done();
-							}
-							const actual = Buffer.allocUnsafe(size);
-							let offset = 0;
-							new UDIF.Image(path.join(filename))
-								.createReadStream()
-								.on('error', done)
+				specify(testName, async () => {
+					await UDIF.withOpenImage(filename, async (image) => {
+						const size = await image.getUncompressedSize();
+						const actual = Buffer.allocUnsafe(size);
+						let offset = 0;
+						const stream = await image.createReadStream();
+						await new Promise((resolve, reject) => {
+							stream
+								.on('error', reject)
 								// NOTE: This can catch & bubble up read/push after EOD errors,
 								// which have previously gone unnoticed
-								.pipe(new stream.PassThrough())
+								.pipe(new PassThrough())
 								.on('data', (chunk: Buffer) => {
 									chunk.copy(actual, offset);
 									offset += chunk.length;
@@ -174,85 +103,44 @@ context('UDIF.ReadStream', function () {
 								.once('end', () => {
 									assert.ok(expected.equals(actual));
 									assert.equal(expected.length, size);
-									done();
+									resolve();
 								});
-						},
-					);
+						});
+					});
 				});
 			});
 		});
 	});
 });
 
-context('UDIF.SparseReadStream', function () {
-	images.forEach(function (data) {
-		context(data.filename, function () {
-			specify('read & decompress image', function (done) {
-				let bytesRead = 0;
-
-				new UDIF.Image(path.join(DATADIR, data.filename))
-					.createSparseReadStream()
-					.on('error', done)
-					.on('data', function (block: { buffer: Buffer; position: number }) {
-						bytesRead += block.buffer.length;
-					})
-					.on('end', function () {
-						assert.equal(bytesRead, data.mappedSize);
-						done();
+context('UDIF.SparseReadStream', () => {
+	images.forEach((data) => {
+		context(data.filename, () => {
+			specify('read & decompress image', async () => {
+				await UDIF.withOpenImage(path.join(DATADIR, data.filename), async (image) => {
+					const stream = await image.createSparseReadStream();
+					await new Promise((resolve, reject) => {
+						let bytesRead = 0;
+						stream
+							.on('error', reject)
+							.on('data', (block: { buffer: Buffer; position: number }) => {
+								bytesRead += block.buffer.length;
+							})
+							.on('end', () => {
+								assert.equal(bytesRead, data.mappedSize);
+								resolve();
+							});
 					});
-			});
-
-			specify('stream an already opened image', function (done) {
-				const image = new UDIF.Image(path.join(DATADIR, data.filename));
-				let bytesRead = 0;
-
-				image.open(function (error?: Error | null) {
-					if (error) {
-						return done(error);
-					}
-
-					image
-						.createSparseReadStream()
-						.on('error', done)
-						// TODO: factorize type
-						.on('data', function (block: { buffer: Buffer; position: number }) {
-							bytesRead += block.buffer.length;
-						})
-						.on('end', function () {
-							assert.equal(bytesRead, data.mappedSize);
-							done();
-						});
 				});
-			});
-
-			specify('can close while reading', function (done) {
-				new UDIF.Image(path.join(DATADIR, data.filename))
-					.createSparseReadStream()
-					.on('error', done)
-					.on('data', function (this: UDIF.SparseReadStream) {
-						this.close();
-					})
-					.on('close', function () {
-						done();
-					});
-			});
-
-			specify('can destroy while reading', function (done) {
-				new UDIF.Image(path.join(DATADIR, data.filename))
-					.createSparseReadStream()
-					.on('error', done)
-					.on('data', function (this: UDIF.SparseReadStream) {
-						this.destroy();
-					})
-					.on('close', done);
 			});
 		});
 	});
 
-	context('Compression Methods', function () {
+	context('Compression Methods', () => {
 		const expected = fs.readFileSync(
-			path.join(__dirname, 'data', 'decompressed.img'),
+			path.join(DATADIR, 'decompressed.img'),
 		);
+		// TODO: factorize
 		const sources = [
 			'compression-adc.dmg',
 			'compression-bz2.dmg',
@@ -260,43 +148,36 @@ context('UDIF.SparseReadStream', function () {
 			// 'compression-lzfse.dmg',
 			'compression-raw.dmg',
 			'compression-zlib.dmg',
-		].map((f) => path.join(__dirname, 'data', f));
+		].map((f) => path.join(DATADIR, f));
 
-		context('source image equality', function () {
+		context('source image equality', () => {
 			sources.forEach((filename) => {
 				const testName = path
 					.basename(filename, '.dmg')
 					.replace('compression-', '')
 					.toUpperCase();
 
-				specify(testName, function (done) {
-					UDIF.getUncompressedSize(
-						filename,
-						(error?: Error | null, size?: number) => {
-							if (error) {
-								return done(error);
-							}
-							if (size === undefined) {
-								return done();
-							}
-							const actual = Buffer.alloc(size);
-							new UDIF.Image(path.join(filename))
-								.createSparseReadStream()
-								.on('error', done)
+				specify(testName, async () => {
+					await UDIF.withOpenImage(filename, async (image) => {
+						const size = await image.getUncompressedSize();
+						const actual = Buffer.alloc(size);
+						const stream = await image.createSparseReadStream();
+						await new Promise((resolve, reject) => {
+							stream
+								.on('error', reject)
 								// NOTE: This can catch & bubble up read/push after EOD errors,
 								// which have previously gone unnoticed
-								.pipe(new stream.PassThrough({ objectMode: true }))
-								// TODO: factorize type
+								.pipe(new PassThrough({ objectMode: true }))
 								.on('data', (chunk: { buffer: Buffer; position: number }) => {
 									chunk.buffer.copy(actual, chunk.position);
 								})
 								.once('end', () => {
 									assert.ok(expected.equals(actual), 'Buffer equality');
 									assert.equal(expected.length, size);
-									done();
+									resolve();
 								});
-						},
-					);
+						});
+					});
 				});
 			});
 		});
