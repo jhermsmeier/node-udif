@@ -34,7 +34,7 @@
     "apple-data-compression": "^0.4.1",
     "apple-plist": "^0.3.0",
     "cyclic-32": "^1.1.0",
-    "seek-bzip": "^1.0.5"
+    "unbzip2-stream": "^1.4.3"
   },
   "devDependencies": {
     "@balena/lint": "^5.1.0",

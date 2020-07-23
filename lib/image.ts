@@ -1,12 +1,13 @@
 import * as plist from 'apple-plist';
 import * as crc32 from 'cyclic-32';
-import { ReadableOptions, Transform } from 'stream';
+import { Readable, Transform } from 'stream';
 
-import { BLOCK, CHECKSUM_TYPE, SECTOR_SIZE } from './constants';
-import { ReadStream } from './readstream';
-import { Footer } from './footer';
-import { SparseReadStream } from './sparse-readstream';
 import { BlockMap } from './blockmap';
+import { BLOCK, CHECKSUM_TYPE, SECTOR_SIZE } from './constants';
+import { Footer } from './footer';
+import { readStream } from './readstream';
+import { sparseReadStream } from './sparse-readstream';
+import { streamToBuffer } from './utils';
 
 interface Blk {
 	ID: string;
@@ -49,12 +50,6 @@ interface InternalResourceFork {
 
 interface Fs {
 	size: number;
-	read: (
-		buffer: Buffer,
-		offset: number,
-		length: number,
-		position: number,
-	) => Promise<{ buffer: Buffer; bytesRead: number }>;
 	createReadStream: (
 		start?: number,
 		end?: number,
@@ -73,33 +68,9 @@ export class Image {
 		plst: [],
 		size: [],
 	};
-	public readonly fs: Fs;
 	public readonly ready: Promise<void>;
 
-	constructor(fs: Fs) {
-		this.fs = {
-			size: fs.size,
-			createReadStream: fs.createReadStream,
-			read: async (
-				buf: Buffer,
-				offset: number,
-				length: number,
-				position: number,
-			) => {
-				const { buffer, bytesRead } = await fs.read(
-					buf,
-					offset,
-					length,
-					position,
-				);
-				if (bytesRead !== length) {
-					throw new Error(
-						`Bytes read mismatch, expected ${length}, got ${bytesRead}`,
-					);
-				}
-				return { buffer, bytesRead };
-			},
-		};
+	constructor(public readonly fs: Fs) {
 		this.ready = this.open();
 	}
 
@@ -169,15 +140,17 @@ export class Image {
 	}
 
 	/** Create a readable stream of this image */
-	public async createReadStream(options: ReadableOptions = {}) {
+	public async createReadStream() {
 		await this.ready;
-		return new ReadStream(this, options);
+		// @ts-ignore: Readable.from exists
+		return Readable.from(readStream(this));
 	}
 
 	/** Create a sparse readable stream of this image */
-	public async createSparseReadStream(options: ReadableOptions = {}) {
+	public async createSparseReadStream() {
 		await this.ready;
-		return new SparseReadStream(this, options);
+		// @ts-ignore: Readable.from exists
+		return Readable.from(sparseReadStream(this));
 	}
 
 	/** Calculate the uncompressed size of the contained resource */
@@ -236,7 +209,7 @@ export class Image {
 				.on('error', reject)
 				.pipe(hash)
 				.on('error', reject)
-				.on('readable', function (this: ReadStream) {
+				.on('readable', function (this: Transform) {
 					let chunk: string = this.read();
 					while (chunk) {
 						checksum += chunk;
@@ -252,11 +225,8 @@ export class Image {
 	private async readFooter(): Promise<Footer> {
 		const length = Footer.SIZE;
 		const position = this.fs.size - Footer.SIZE;
-		const { buffer } = await this.fs.read(
-			Buffer.allocUnsafe(length),
-			0,
-			length,
-			position,
+		const buffer = await streamToBuffer(
+			await this.fs.createReadStream(position, position + length - 1),
 		);
 		this.footer = Footer.parse(buffer);
 		return this.footer;
@@ -268,11 +238,8 @@ export class Image {
 		}
 		const length = this.footer.xmlLength;
 		const position = this.footer.xmlOffset;
-		const { buffer } = await this.fs.read(
-			Buffer.allocUnsafe(length),
-			0,
-			length,
-			position,
+		const buffer = await streamToBuffer(
+			await this.fs.createReadStream(position, position + length - 1),
 		);
 		const data = plist.parse(buffer.toString()).data;
 		const resourceFork: ResourceFork = data['resource-fork'];
