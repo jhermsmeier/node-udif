@@ -44,6 +44,20 @@ interface InternalResourceFork {
 	size: InternalBlk[];
 }
 
+interface Fs {
+	size: number;
+	read: (
+		buffer: Buffer,
+		offset: number,
+		length: number,
+		position: number,
+	) => Promise<{ buffer: Buffer; bytesRead: number }>;
+	createReadStream: (
+		start?: number,
+		end?: number,
+	) => Promise<NodeJS.ReadableStream>;
+}
+
 /**
  * Apple Disk Image (DMG)
  */
@@ -57,23 +71,33 @@ export class Image {
 		plst: [],
 		size: [],
 	};
+	public readonly fs: Fs;
 	public readonly ready: Promise<void>;
 
-	constructor(
-		public readonly fs: {
-			size: number;
-			read: (
-				buffer: Buffer,
+	constructor(fs: Fs) {
+		this.fs = {
+			size: fs.size,
+			createReadStream: fs.createReadStream,
+			read: async (
+				buf: Buffer,
 				offset: number,
 				length: number,
 				position: number,
-			) => Promise<{ buffer: Buffer; bytesRead: number }>;
-			createReadStream: (
-				start?: number,
-				end?: number,
-			) => Promise<NodeJS.ReadableStream>;
-		},
-	) {
+			) => {
+				const { buffer, bytesRead } = await fs.read(
+					buf,
+					offset,
+					length,
+					position,
+				);
+				if (bytesRead !== length) {
+					throw new Error(
+						`Bytes read mismatch, expected ${length}, got ${bytesRead}`,
+					);
+				}
+				return { buffer, bytesRead };
+			},
+		};
 		this.ready = this.open();
 	}
 
@@ -227,17 +251,12 @@ export class Image {
 	private async readFooter(): Promise<Footer> {
 		const length = Footer.SIZE;
 		const position = this.fs.size - Footer.SIZE;
-		const { bytesRead, buffer } = await this.fs.read(
+		const { buffer } = await this.fs.read(
 			Buffer.allocUnsafe(length),
 			0,
 			length,
 			position,
 		);
-		if (bytesRead !== length) {
-			throw new Error(
-				`Bytes read mismatch, expected ${length}, got ${bytesRead}`,
-			);
-		}
 		this.footer = Footer.parse(buffer);
 		return this.footer;
 	}
@@ -249,18 +268,12 @@ export class Image {
 		}
 		const length = this.footer.xmlLength;
 		const position = this.footer.xmlOffset;
-		const { buffer, bytesRead } = await this.fs.read(
+		const { buffer } = await this.fs.read(
 			Buffer.allocUnsafe(length),
 			0,
 			length,
 			position,
 		);
-		// TODO: factorize
-		if (bytesRead !== length) {
-			throw new Error(
-				`Bytes read mismatch, expected ${length}, got ${bytesRead}`,
-			);
-		}
 		const data = plist.parse(buffer.toString()).data;
 		const resourceFork: ResourceFork = data['resource-fork'];
 		if (resourceFork.blkx) {

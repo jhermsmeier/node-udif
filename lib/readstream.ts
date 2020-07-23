@@ -82,13 +82,6 @@ export class ReadStream extends Readable {
 
 		this.bytesRead += bytesRead;
 
-		if (bytesRead !== length) {
-			// TODO: factorize
-			throw new Error(
-				`Bytes read mismatch, expected ${size}, got ${bytesRead}`,
-			);
-		}
-
 		if (block.type !== BLOCK.RAW) {
 			const buffer = decompressBlock(block.type, this._blockBuffer, length);
 			this.bytesWritten += buffer.length;

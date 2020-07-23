@@ -57,13 +57,6 @@ export class SparseReadStream extends ReadStream {
 		this._block++;
 		this.bytesRead += bytesRead;
 
-		// TODO: factorize
-		if (bytesRead !== length) {
-			throw new Error(
-				`Bytes read mismatch, expected ${length}, got ${bytesRead}`,
-			);
-		}
-
 		const chunkPosition =
 			entry.map.sectorNumber * SECTOR_SIZE + block.sectorNumber * SECTOR_SIZE;
 
