@@ -19,6 +19,16 @@
     "build",
     "typings"
   ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./**/*.ts": [
+      "npm run lint-fix"
+    ]
+  },
   "main": "build/index.js",
   "dependencies": {
     "apple-data-compression": "^0.4.1",
@@ -29,6 +39,8 @@
   "devDependencies": {
     "@balena/lint": "^5.1.0",
     "@types/mocha": "^8.0.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
     "mocha": "^8.0.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
