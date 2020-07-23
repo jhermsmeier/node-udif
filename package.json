@@ -1,5 +1,5 @@
 {
-  "name": "udif",
+  "name": "@balena/udif",
   "version": "0.17.0",
   "description": "Apple Universal Disk Image Format (UDIF/DMG)",
   "license": "MIT",
@@ -49,13 +49,13 @@
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   },
-  "homepage": "https://github.com/jhermsmeier/node-udif",
+  "homepage": "https://github.com/balena-io-modules/node-udif",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jhermsmeier/node-udif.git"
+    "url": "git+https://github.com/balena-io-modules/node-udif.git"
   },
   "bugs": {
-    "url": "https://github.com/jhermsmeier/node-udif/issues"
+    "url": "https://github.com/balena-io-modules/node-udif/issues"
   },
   "scripts": {
     "prepublish": "npm run build",
