@@ -1,9 +1,13 @@
 {
-  "name": "udif",
+  "name": "@balena/udif",
   "version": "0.17.0",
   "description": "Apple Universal Disk Image Format (UDIF/DMG)",
   "license": "MIT",
   "author": "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
+  "contributors": [
+    "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
+    "Alexis Svinartchouk <alexis@balena.io>"
+  ],
   "keywords": [
     "apple",
     "disk",
@@ -15,28 +19,49 @@
     "udif",
     "universal"
   ],
-  "main": "lib/udif.js",
+  "files": [
+    "build",
+    "typings"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./**/*.ts": [
+      "npm run lint-fix"
+    ]
+  },
+  "main": "build/index.js",
   "dependencies": {
     "apple-data-compression": "^0.4.1",
     "apple-plist": "^0.3.0",
     "cyclic-32": "^1.1.0",
-    "readable-stream": "^3.4.0",
-    "seek-bzip": "^1.0.5"
+    "unbzip2-stream": "^1.4.3"
   },
   "devDependencies": {
-    "mocha": "^6.2.2"
+    "@balena/lint": "^5.1.0",
+    "@types/mocha": "^8.0.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "mocha": "^8.0.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
-  "peerDependencies": {},
-  "optionalDependencies": {},
-  "homepage": "https://github.com/jhermsmeier/node-udif",
+  "homepage": "https://github.com/balena-io-modules/node-udif",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jhermsmeier/node-udif.git"
+    "url": "git+https://github.com/balena-io-modules/node-udif.git"
   },
   "bugs": {
-    "url": "https://github.com/jhermsmeier/node-udif/issues"
+    "url": "https://github.com/balena-io-modules/node-udif/issues"
   },
   "scripts": {
-    "test": "mocha"
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "mocha -r ts-node/register test/*.spec.ts",
+    "lint": "balena-lint --typescript lib test",
+    "lint-fix": "balena-lint --fix --typescript lib test"
   }
 }
