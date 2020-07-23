@@ -1,6 +1,6 @@
 {
   "name": "@balena/udif",
-  "version": "0.17.0",
+  "version": "1.0.0",
   "description": "Apple Universal Disk Image Format (UDIF/DMG)",
   "license": "MIT",
   "author": "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
@@ -61,7 +61,7 @@
     "prepublish": "npm run build",
     "build": "tsc",
     "test": "mocha -r ts-node/register test/*.spec.ts",
-    "lint": "balena-lint --typescript lib test",
-    "lint-fix": "balena-lint --fix --typescript lib test"
+    "lint": "balena-lint --typescript lib test example",
+    "lint-fix": "balena-lint --fix --typescript lib test example"
   }
 }
