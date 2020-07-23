@@ -1,4 +1,4 @@
-import { CHECKSUM_TYPE } from './';
+import { CHECKSUM_TYPE } from './constants';
 
 /**
  * UDIF Checksum Structure

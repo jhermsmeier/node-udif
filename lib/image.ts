@@ -2,7 +2,7 @@ import * as plist from 'apple-plist';
 import * as crc32 from 'cyclic-32';
 import { ReadableOptions, Transform } from 'stream';
 
-import { BLOCK, CHECKSUM_TYPE, SECTOR_SIZE } from './';
+import { BLOCK, CHECKSUM_TYPE, SECTOR_SIZE } from './constants';
 import { ReadStream } from './readstream';
 import { Footer } from './footer';
 import { SparseReadStream } from './sparse-readstream';

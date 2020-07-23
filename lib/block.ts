@@ -1,4 +1,4 @@
-import { BLOCK } from './';
+import { BLOCK } from './constants';
 import { readBE, writeBE } from './uint64';
 
 /**

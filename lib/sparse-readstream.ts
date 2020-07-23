@@ -1,8 +1,9 @@
 import { ReadableOptions } from 'stream';
 
+import { BLOCK, SECTOR_SIZE } from './constants';
 import { Image } from './image';
 import { ReadStream } from './readstream';
-import { decompressBlock, BLOCK, SECTOR_SIZE } from './';
+import { decompressBlock } from './utils';
 
 export class SparseReadStream extends ReadStream {
 	_blockBuffer = Buffer.allocUnsafe(2 * 1024 * 1024);

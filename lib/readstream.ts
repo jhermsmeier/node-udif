@@ -1,7 +1,8 @@
 import { Readable, ReadableOptions } from 'stream';
 
+import { BLOCK, SECTOR_SIZE } from './constants';
 import { Image } from './image';
-import { BLOCK, SECTOR_SIZE, decompressBlock } from './';
+import { decompressBlock } from './utils';
 
 export class ReadStream extends Readable {
 	bytesRead = 0;
