@@ -26,12 +26,7 @@ export async function withOpenImage<T>(
 }
 
 /** Decompress an image block */
-export function decompressBlock(
-	type: BLOCK,
-	buffer: Buffer,
-	length: number,
-): Buffer {
-	buffer = buffer.slice(0, length);
+export function decompressBlock(type: BLOCK, buffer: Buffer): Buffer {
 	switch (type) {
 		case BLOCK.UDZO:
 			return zlib.inflateSync(buffer);

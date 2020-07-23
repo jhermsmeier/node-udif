@@ -30,10 +30,13 @@ interface InternalBlk {
 	data: Buffer;
 }
 
+export type InternalEntry = Omit<InternalBlk, 'data'> & {
+	map: BlockMap;
+	coreFoundationName: string;
+};
+
 interface InternalResourceFork {
-	blkx: Array<
-		Omit<InternalBlk, 'data'> & { map: BlockMap; coreFoundationName: string }
-	>;
+	blkx: InternalEntry[];
 	nsiz: InternalBlk[];
 	cSum: Array<
 		Omit<InternalBlk, 'data'> & {
@@ -62,7 +65,6 @@ interface Fs {
  * Apple Disk Image (DMG)
  */
 export class Image {
-	fd?: number;
 	footer?: Footer;
 	resourceFork: InternalResourceFork = {
 		blkx: [],
@@ -204,7 +206,6 @@ export class Image {
 
 	public async verifyData(): Promise<boolean | null> {
 		await this.ready;
-		// TODO: impossible
 		if (this.footer === undefined) {
 			throw new Error('Must read footer before calling verifyData');
 		}
@@ -262,7 +263,6 @@ export class Image {
 	}
 
 	private async readPropertyList(): Promise<InternalResourceFork> {
-		// TODO: impossible
 		if (this.footer === undefined) {
 			throw new Error('Must read footer before property list');
 		}
