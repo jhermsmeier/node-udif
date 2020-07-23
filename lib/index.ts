@@ -50,20 +50,13 @@ export async function withOpenImage<T>(
 			size: (await handle.stat()).size,
 			read: handle.read.bind(handle),
 			createReadStream: async (start = 0, end = Infinity) =>
-			CRS('', { fd: handle.fd, start, end }),
+				CRS('', { fd: handle.fd, start, end }),
 		});
 		await image.ready;
 		return await fn(image);
 	} finally {
 		await handle.close();
 	}
-}
-
-/** Get the uncompressed size of a given image */
-export async function getUncompressedSize(filename: string): Promise<number> {
-	return await withOpenImage(filename, async (image: Image) => {
-		return await image.getUncompressedSize();
-	});
 }
 
 /** Decompress an image block */
