@@ -4,6 +4,10 @@
   "description": "Apple Universal Disk Image Format (UDIF/DMG)",
   "license": "MIT",
   "author": "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
+  "contributors": [
+    "Jonas Hermsmeier <jhermsmeier@gmail.com> (https://jhermsmeier.de)",
+    "Alexis Svinartchouk <alexis@balena.io>"
+  ],
   "keywords": [
     "apple",
     "disk",
