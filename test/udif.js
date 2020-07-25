@@ -1,3 +1,4 @@
+var { context, test } = require( '@jhermsmeier/control' )
 var assert = require( 'assert' )
 var fs = require( 'fs' )
 var path = require( 'path' )
@@ -9,7 +10,7 @@ const DATADIR = path.join( __dirname, 'data' )
 
 context( 'UDIF.getUncompressedSize()', function() {
   images.forEach( function( data ) {
-    specify( data.filename, function( done ) {
+    test( data.filename, function( done ) {
       UDIF.getUncompressedSize( path.join( DATADIR, data.filename ), function( error, size ) {
         assert.ifError( error )
         assert.equal( size, data.uncompressedSize )
@@ -26,23 +27,23 @@ context( 'UDIF.Image', function() {
       var filename = path.join( DATADIR, data.filename )
       var image = null
 
-      specify( 'new UDIF.Image()', function() {
+      test( 'new UDIF.Image()', function() {
         image = new UDIF.Image( filename )
       })
 
-      specify( 'image.open()', function( done ) {
+      test( 'image.open()', function( done ) {
         image.open( done )
       })
 
-      specify( 'image.footer.dataForkLength', function() {
+      test( 'image.footer.dataForkLength', function() {
         assert.equal( image.footer.dataForkLength, data.dataForkLength )
       })
 
-      specify( 'image.getUncompressedSize()', function() {
+      test( 'image.getUncompressedSize()', function() {
         assert.equal( image.getUncompressedSize(), data.uncompressedSize )
       })
 
-      specify( 'image.verifyData()', function( done ) {
+      test( 'image.verifyData()', function( done ) {
         image.verifyData( function( error, verified ) {
           if( !error ) {
             assert.strictEqual( verified, true )
@@ -51,19 +52,18 @@ context( 'UDIF.Image', function() {
         })
       })
 
-      specify( 'image.close()', function( done ) {
+      test( 'image.close()', function( done ) {
         image.close( done )
       })
 
     })
   })
 })
-
 context( 'UDIF.ReadStream', function() {
   images.forEach( function( data ) {
     context( data.filename, function() {
 
-      specify( 'read & decompress image', function( done ) {
+      test( 'read & decompress image', function( done ) {
 
         var bytesRead = 0
 
@@ -80,7 +80,7 @@ context( 'UDIF.ReadStream', function() {
 
       })
 
-      specify( 'stream an already opened image', function( done ) {
+      test( 'stream an already opened image', function( done ) {
 
         var image = new UDIF.Image( path.join( DATADIR, data.filename ) )
         var bytesRead = 0
@@ -106,7 +106,7 @@ context( 'UDIF.ReadStream', function() {
 
       })
 
-      specify( 'can close while reading', function( done ) {
+      test( 'can close while reading', function( done ) {
 
         UDIF.createReadStream( path.join( DATADIR, data.filename ) )
           .on( 'error', done )
@@ -119,7 +119,7 @@ context( 'UDIF.ReadStream', function() {
 
       })
 
-      specify( 'can destroy while reading', function( done ) {
+      test( 'can destroy while reading', function( done ) {
 
         UDIF.createReadStream( path.join( DATADIR, data.filename ) )
           .on( 'error', done )
@@ -135,7 +135,7 @@ context( 'UDIF.ReadStream', function() {
 
   context( 'Compression Methods', function() {
 
-    var expected = fs.readFileSync( path.join( __dirname, 'data', 'decompressed.img' ) )
+    var expected = fs.readFileSync( path.join( DATADIR, 'decompressed.img' ) )
     var sources = [
       'compression-adc.dmg',
       'compression-bz2.dmg',
@@ -143,7 +143,7 @@ context( 'UDIF.ReadStream', function() {
       // 'compression-lzfse.dmg',
       'compression-raw.dmg',
       'compression-zlib.dmg',
-    ].map( f => path.join( __dirname, 'data', f ) )
+    ].map( f => path.join( DATADIR, f ) )
 
     context( 'source image equality', function() {
 
@@ -153,7 +153,7 @@ context( 'UDIF.ReadStream', function() {
           .replace( 'compression-', '' )
           .toUpperCase()
 
-        specify( testName, function( done ) {
+        test( testName, function( done ) {
 
           UDIF.getUncompressedSize( filename, ( error, size ) => {
             if( error ) return done( error )
@@ -190,7 +190,7 @@ context( 'UDIF.SparseReadStream', function() {
   images.forEach( function( data ) {
     context( data.filename, function() {
 
-      specify( 'read & decompress image', function( done ) {
+      test( 'read & decompress image', function( done ) {
 
         var bytesRead = 0
 
@@ -207,7 +207,7 @@ context( 'UDIF.SparseReadStream', function() {
 
       })
 
-      specify( 'stream an already opened image', function( done ) {
+      test( 'stream an already opened image', function( done ) {
 
         var image = new UDIF.Image( path.join( DATADIR, data.filename ) )
         var bytesRead = 0
@@ -233,7 +233,7 @@ context( 'UDIF.SparseReadStream', function() {
 
       })
 
-      specify( 'can close while reading', function( done ) {
+      test( 'can close while reading', function( done ) {
 
         UDIF.createSparseReadStream( path.join( DATADIR, data.filename ) )
           .on( 'error', done )
@@ -246,7 +246,7 @@ context( 'UDIF.SparseReadStream', function() {
 
       })
 
-      specify( 'can destroy while reading', function( done ) {
+      test( 'can destroy while reading', function( done ) {
 
         UDIF.createSparseReadStream( path.join( DATADIR, data.filename ) )
           .on( 'error', done )
@@ -262,7 +262,7 @@ context( 'UDIF.SparseReadStream', function() {
 
   context( 'Compression Methods', function() {
 
-    var expected = fs.readFileSync( path.join( __dirname, 'data', 'decompressed.img' ) )
+    var expected = fs.readFileSync( path.join( DATADIR, 'decompressed.img' ) )
     var sources = [
       'compression-adc.dmg',
       'compression-bz2.dmg',
@@ -270,7 +270,7 @@ context( 'UDIF.SparseReadStream', function() {
       // 'compression-lzfse.dmg',
       'compression-raw.dmg',
       'compression-zlib.dmg',
-    ].map( f => path.join( __dirname, 'data', f ) )
+    ].map( f => path.join( DATADIR, f ) )
 
     context( 'source image equality', function() {
 
@@ -280,7 +280,7 @@ context( 'UDIF.SparseReadStream', function() {
           .replace( 'compression-', '' )
           .toUpperCase()
 
-        specify( testName, function( done ) {
+        test( testName, function( done ) {
 
           UDIF.getUncompressedSize( filename, ( error, size ) => {
             if( error ) return done( error )

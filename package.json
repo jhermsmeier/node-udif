@@ -20,11 +20,11 @@
     "apple-data-compression": "^0.4.1",
     "apple-plist": "^0.3.0",
     "cyclic-32": "^1.1.0",
-    "readable-stream": "^3.4.0",
+    "readable-stream": "^3.6.0",
     "seek-bzip": "^1.0.5"
   },
   "devDependencies": {
-    "mocha": "^6.2.2"
+    "@jhermsmeier/control": "^1.0.0"
   },
   "peerDependencies": {},
   "optionalDependencies": {},
@@ -37,6 +37,6 @@
     "url": "https://github.com/jhermsmeier/node-udif/issues"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "control test"
   }
 }
